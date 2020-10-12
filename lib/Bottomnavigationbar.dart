@@ -67,20 +67,20 @@ class _Bottomnavigationbar extends State<Bottomnavigationbar> {
           return;
         }else if (newIndex == 2) {
 
-          if(shiftType.toString()=='3'){
+         /* if(shiftType.toString()=='3'){
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => MyAppFlexi()),
             );
 
-          }
-          else{
+          }*/
+      //    else{
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => userShiftCalendar()),
             );
 
-          }
+         // }
 
 
           return;

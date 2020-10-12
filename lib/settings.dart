@@ -13,6 +13,7 @@ import 'department.dart';
 import 'designation.dart';
 import 'drawer.dart';
 import 'employee_list.dart';
+import 'geofenceList.dart';
 import 'globals.dart';
 import 'holidays.dart';
 import 'home.dart';
@@ -661,7 +662,11 @@ class _Settings extends State<Settings> {
         splashColor: splashcolor,
         textColor: textcolor,
         onPressed: () {
-          showDialogWidget("To configure Geo Fence, login to the web admin panel");
+         // showDialogWidget("To configure Geo Fence, login to the web admin panel");
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => geofencelist()),
+          );
           // Perform some action
         },
       ));

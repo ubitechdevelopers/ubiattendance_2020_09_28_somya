@@ -1451,7 +1451,9 @@ class _CustomDateAttendance extends State<CustomDateAttendance> with SingleTicke
     );
 
   }
+
   Future<List<User>> getInterimAttendanceSummary(attendanceMasterId) async {
+    print(globals.path+'getInterimAttendances?attendanceMasterId=$attendanceMasterId');
 
     final response = await http.get(globals.path+'getInterimAttendances?attendanceMasterId=$attendanceMasterId');
     print(response.body);

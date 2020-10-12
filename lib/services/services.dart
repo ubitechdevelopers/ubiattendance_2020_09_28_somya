@@ -4626,19 +4626,145 @@ class AttendanceList {
   AttendanceList({this.AttendanceDate, this.TimeIn, this.TimeOut, this.AttendanceStatus,});
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ////////////////////////////////////////////////////////////////release1.0///////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////geofence services//////////////////////////////////////////////////
+
+
+
+Future<int> saveGeoAllocation(geoid, List employee,) async{
+  final prefs = await SharedPreferences.getInstance();
+  String orgid = prefs.getString('orgdir') ?? '';
+  String empid = prefs.getString('empid') ?? '';
+  String empList='';
+  // print("chal naaaaaaaaaaaaaaaaaa");
+  for(int i=0;i<employee.length;i++){
+    empList+=employee[i].toString()+',';
+  }
+
+  // print("chal jaa munna!!");
+  /* print(orgid);
+  print(empid);
+  print(empList);
+  print(geoid);*/
+
+  print( globals.path + 'saveGeoAllocation?refno=$orgid&empid=$empid&geoid=$geoid&empList=$empList');
+  final response = await http.get(globals.path + 'saveGeoAllocation?refno=$orgid&empid=$empid&geoid=$geoid&empList=$empList');
+
+  print('response recieved: '+response.body.toString());
+  return int.parse(response.body);
+}
+
+Future<int> addgeofence(name,streamlocationaddr,currentloc,currlat,currlong,latitude,longitude,radius) async {
+
+  print(name);
+  print(streamlocationaddr);
+  print(currentloc);
+  print(currlat);
+  print(currlong);
+  print(latitude);
+  print("----------------------------123131------------------");
+  print(longitude);
+  print(radius);
+
+  var location;
+  double rad = double.parse(radius);
+  String lat_long;
+  var centername = name;
+
+  if( latitude != ''&& longitude != ''){  ////////////if user select lat,long
+    lat_long = latitude+" , "+longitude;
+  }
+  else{                                 //////////////by default lat,long
+    lat_long =  currlat+" , "+currlong;
+  }
+
+///////////////////////location//////////////
+
+  if(streamlocationaddr != ''){
+    location = streamlocationaddr;          ////////user select location
+  }
+  else {
+    location = currentloc;                   ////by default location
+  }
+
+  final prefs = await SharedPreferences.getInstance();
+  String empid = prefs.getString('empid') ?? '';
+  String orgdir = prefs.getString('orgdir') ?? '';
+
+  print(globals.path + 'saveGeolocation?location=$location&orgid=$orgdir&lat_long=$lat_long&centername=$centername&rad=$rad');
+// final response = await http.get(globals.path + 'saveGeolocation?location=$location&orgid=$orgdir&lat_long=$lat_long&centername=$centername&rad=$rad');
+  try {
+    Dio dio = new Dio();
+    FormData formData = new FormData.from({
+      "location": location,
+      "orgid": orgdir,
+      "lat_long": lat_long,
+      "centername": centername,
+      "rad": rad,
+    });
+    Map geo;
+    Response<String> response1 = await dio.post(globals.path + "saveGeolocation", data: formData);
+    print(response1.data.toString());
+    geo = await json.decode(response1.data);
+    print(geo);
+    print("sgcode1");
+//    PunchLocation pnch=new PunchLocation();
+
+    if (geo["status"].toString() == 'true') {
+      return 1;
+    } else
+      print('------response failer----------' + geo["status"].toString());
+    return 0;
+  }
+  catch(e){
+    return 0;
+  }
+
+  //var res = json.decode(response.body);
+//  print("--------> Adding geofence" + res.toString());
+//  return res['sts'];
+}
+
+
+Future<List<geofence1>> getGeofence() async {
+
+  final prefs = await SharedPreferences.getInstance();
+  String orgid = prefs.getString('orgdir') ?? '';
+  print("geooooolalala   " +   globals.path + 'getGeolocation?refno=$orgid');
+  final response = await http.get(globals.path + 'getGeolocation?refno=$orgid');
+  List responseJson = json.decode(response.body.toString());
+  /* print(responseJson);
+   print("response json");*/
+  List<geofence1> list = createGeofencelist(responseJson);
+/*  print(list);
+  print("list is");*/
+  return list;
+}
+
+
+List<geofence1> createGeofencelist(List data) {
+  List<geofence1> list = new List();
+
+  for (int i = 0; i < data.length ; i++) {
+    String name = data[i]["name"].toString();
+    String location = data[i]["location"];
+    double radius = data[i]["radius"].toDouble();
+    String id = data[i]["Id"].toString();
+
+    geofence1 row = new geofence1(
+        name: name, location: location, radius: radius, id:id);
+    list.add(row);
+
+  }
+  return list;
+}
+
+class geofence1 {
+  dynamic name;
+  String location;
+  double radius;
+  String id;
+  geofence1({this.name, this.location, this.radius,this.id });
+
+}
