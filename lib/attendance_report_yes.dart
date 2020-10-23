@@ -86,6 +86,7 @@ class _YesAttendance extends State<YesAttendance> with SingleTickerProviderState
       key: _scaffoldKey,
       appBar: new AppBar(
         title: new Text(_orgName??"    ", style: new TextStyle(fontSize: 20.0)),
+
         backgroundColor: appcolor,
       ),
       endDrawer: new AppDrawer(),

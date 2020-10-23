@@ -894,17 +894,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                     globals.facebookChannel.invokeMethod("logCompleteRegistrationEvent");
 
-
-//                                      await new Future.delayed(const Duration(seconds: 2));
+                                    // await new Future.delayed(const Duration(seconds: 2));
                                       // login(_phone.text, _pass.text, context);
 
 
-                                      varifyotp('00000',_email.text,_pass.text).then((a){
+                                    varifyotp('00000',_email.text,_pass.text).then((a){
                                             print("Navigated");
 
-
-
-                                      });
+                                    });
 
 
                                    // comment by sohan
@@ -928,8 +925,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ));*/
 
 
-                                  } else if (res['sts'] == 'false1' ||
-                                      res['sts'] == 'false3') {
+                                  } else if (res['sts'] == 'false1' || res['sts'] == 'false3') {
                                     // ignore: deprecated_member_use
                                     showDialog(context: context, child:
                                     new AlertDialog(
@@ -956,7 +952,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                   }
                                   setState(() {
                                     _isButtonDisabled=false;
-
                                   });
                                 } else {
                                   setState(() {

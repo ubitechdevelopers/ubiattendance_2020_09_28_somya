@@ -4,6 +4,7 @@
 import 'package:Shrine/services/services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'drawer.dart';
 import 'globals.dart';
@@ -20,6 +21,7 @@ class _LastSeven extends State<LastSeven> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String _orgName = "";
   String newValue ;
+  String admin_sts="";
   Future<List<Attn>> _listFuture,_listFuture1,_listFuture2,_listFuture3,_listFuture4;
 
 
@@ -34,8 +36,36 @@ class _LastSeven extends State<LastSeven> with SingleTickerProviderStateMixin {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _orgName= prefs.getString('org_name') ?? '';
+      admin_sts = prefs.getString('sstatus').toString() ?? '0';
+
     });
   }
+
+  openWhatsApp() async{
+    //prefix0.facebookChannel.invokeMethod("logContactEvent");
+    // print("Language is "+window.locale.countryCode);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var name=prefs.getString("fname")??"";
+    var org_name= prefs.getString('org_name') ?? '';
+    var country = prefs.getString("org_country")??"";
+    //  String country=window.locale.countryCode;
+    var message;
+
+    message="Hello%20I%20am%20"+name+"%20from%20"+org_name+"%0AI%20need%20some%20help%20regarding%20ubiAttendance%20app";
+
+    var url;
+    if(country=="93")
+      url = "https://wa.me/916264345459?text="+message;
+    else{
+      url = "https://wa.me/971555524131?text="+message;
+    }
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch Maps';
+    }
+  }
+
 
   @override
   void initState() {
@@ -69,7 +99,16 @@ class _LastSeven extends State<LastSeven> with SingleTickerProviderStateMixin {
     return new Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
-        title: new Text(_orgName, style: new TextStyle(fontSize: 20.0)),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            new Text(_orgName, style: new TextStyle(fontSize: 20.0)),
+            admin_sts == '1' || admin_sts == '2'? new IconButton(
+              icon: new Image.asset('assets/whatsapp.png', height: 25.0, width: 25.0),
+              onPressed: () => openWhatsApp(),
+            ):Container(),
+          ],
+        ),
         backgroundColor: appcolor,
       ),
       endDrawer: new AppDrawer(),

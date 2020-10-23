@@ -522,6 +522,7 @@ class SaveImage {
 
 
   SendTempimage(context , alertstatus) async{
+
     TempImage imagedata = new TempImage.empty();
     List<TempImage> img = await imagedata.select();
     List<Map> jsonList = [];
@@ -1899,6 +1900,8 @@ class SaveImage {
       return 'false';
     }
   }
+
+
   Future<Map> applyLeave(empid, reason, fromdate, todate,halfdaysts,halfdaysts1,orgid) async {
     Map MarkAttMap;
     try {

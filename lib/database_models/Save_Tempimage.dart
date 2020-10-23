@@ -21,7 +21,6 @@ class TempImage{
       this.OrganizationId,
       this.Module,
       this.shiftId
-
       );
 
 

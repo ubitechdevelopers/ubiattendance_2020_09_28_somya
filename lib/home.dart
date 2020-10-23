@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   FocusNode __newPass = new FocusNode();
 
 
-  showInSnackBarforTimeInOut(var val1,var val2,var val3) {
+  showInSnackBarforTimeInOut(var val1,var val2,var val3)  {
 
     showModalBottomSheet(
         context: context,
@@ -2167,6 +2167,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     new Text(org_name, style: new TextStyle(fontSize: 20.0)),
+                   // SizedBox(width: MediaQuery.of(context).size.width*1),
+                    admin_sts == '1' || admin_sts == '2'? new IconButton(
+                      icon: new Image.asset('assets/whatsapp.png', height: 25.0, width: 25.0),
+                      onPressed: () => openWhatsApp(),
+                    ):Container(),
                   ],
                 ),
                 automaticallyImplyLeading: false,
@@ -2267,6 +2272,31 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         // BlurryEffect(0.5,0.1,Colors.grey.shade200)    //  Second Child
       ],
     ));
+  }
+
+  openWhatsApp() async{
+    //prefix0.facebookChannel.invokeMethod("logContactEvent");
+    print("Language is "+window.locale.countryCode);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var name=prefs.getString("fname")??"";
+    var org_name= prefs.getString('org_name') ?? '';
+    var country = prefs.getString("org_country")??"";
+    //  String country=window.locale.countryCode;
+    var message;
+
+    message="Hello%20I%20am%20"+name+"%20from%20"+org_name+"%0AI%20need%20some%20help%20regarding%20ubiAttendance%20app";
+
+    var url;
+    if(country=="93")
+      url = "https://wa.me/916264345459?text="+message;
+    else{
+      url = "https://wa.me/971555524131?text="+message;
+    }
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch Maps';
+    }
   }
 
   checkalreadylogin() {
@@ -2806,6 +2836,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             )),
       ));
     }
+
     if (BasicLeave.toString() == '1') {
       widList.add(Container(
         padding: EdgeInsets.only(top: 5.0),
@@ -3444,8 +3475,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           print("This is time timeout block"+ act1);
           var prefs = await SharedPreferences.getInstance();
 
-          String OutPushNotificationStatus =
-              await prefs.getString("OutPushNotificationStatus") ?? '0';
+          String OutPushNotificationStatus = await prefs.getString("OutPushNotificationStatus") ?? '0';
           var empId = prefs.getString('empid') ?? '';
           var orgId = prefs.getString("orgid") ?? '';
           var eName = prefs.getString('fname') ?? 'User';
@@ -3485,7 +3515,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
         //prefs.setBool("companyFreshlyRegistered",false );
 
-        showInSnackBarforTimeInOut(issave['TimeInOut'],issave['EntryExitImage'],issave['checkInOutLoc'],);
+         showInSnackBarforTimeInOut(issave['TimeInOut'],issave['EntryExitImage'],issave['checkInOutLoc'],);
+
         /*
         showDialog(
             context: context,
@@ -3497,6 +3528,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           context,
           MaterialPageRoute(builder: (context) => MyApp()),
         );*/
+
         if (mounted) {
           setState(() {
             act1 = act;

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'covid19servey.dart';
 import 'globals.dart' as globals;
 import 'askregister.dart';
@@ -60,6 +61,7 @@ class _MyHomePageState extends State<Every7dayscovidsurvey> {
   String _orgName = "";
   int count = 0;
   String risk = "--";
+  String admin_sts="";
   bool _isVisible = false;
   List<Map> _myJson = [{ "ind": "0"    ,   "id": "2"  ,   "name": "Afghanistan"  ,   "countrycode": "+93"}    ,
     { "ind":"1"       ,      "id": "4"  ,   "name": "Albania"  ,   "countrycode": "+355"}    ,
@@ -316,6 +318,33 @@ class _MyHomePageState extends State<Every7dayscovidsurvey> {
     super.initState();
     initplatform();
   }
+
+  openWhatsApp() async{
+    //prefix0.facebookChannel.invokeMethod("logContactEvent");
+    // print("Language is "+window.locale.countryCode);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var name=prefs.getString("fname")??"";
+    var org_name= prefs.getString('org_name') ?? '';
+    var country = prefs.getString("org_country")??"";
+    //  String country=window.locale.countryCode;
+    var message;
+
+    message="Hello%20I%20am%20"+name+"%20from%20"+org_name+"%0AI%20need%20some%20help%20regarding%20ubiAttendance%20app";
+
+    var url;
+    if(country=="93")
+      url = "https://wa.me/916264345459?text="+message;
+    else{
+      url = "https://wa.me/971555524131?text="+message;
+    }
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch Maps';
+    }
+  }
+
+
   getcount(){
     count = 0;
     
@@ -356,7 +385,9 @@ class _MyHomePageState extends State<Every7dayscovidsurvey> {
       empid = prefs.getString('empid') ?? '';
       orgid = prefs.getString('orgdir') ?? '';
       _orgName = prefs.getString('org_name') ?? '';
-    });
+      admin_sts = prefs.getString('sstatus') ?? '0';
+
+      });
   }
 
   void _toggle() {
@@ -372,6 +403,10 @@ class _MyHomePageState extends State<Every7dayscovidsurvey> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             new Text(_orgName, style: new TextStyle(fontSize: 20.0)),
+            admin_sts == '1' || admin_sts == '2'? new IconButton(
+              icon: new Image.asset('assets/whatsapp.png', height: 25.0, width: 25.0),
+              onPressed: () => openWhatsApp(),
+            ):Container(),
           ],
         ),
         leading: IconButton(icon:Icon(Icons.arrow_back),onPressed:(){

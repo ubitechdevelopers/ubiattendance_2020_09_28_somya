@@ -36,6 +36,7 @@ Widget build(BuildContext context) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             new Text(widget.org_name, style: new TextStyle(fontSize: 20.0)),
+
           ],
         ),
         leading: IconButton(

@@ -68,6 +68,31 @@ class _Reports extends State<Reports> {
         content: Text(value,textAlign: TextAlign.center,));
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
+
+  openWhatsApp() async{
+    //prefix0.facebookChannel.invokeMethod("logContactEvent");
+    // print("Language is "+window.locale.countryCode);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var name=prefs.getString("fname")??"";
+    var org_name= prefs.getString('org_name') ?? '';
+    var country = prefs.getString("org_country")??"";
+    //  String country=window.locale.countryCode;
+    var message;
+
+    message="Hello%20I%20am%20"+name+"%20from%20"+org_name+"%0AI%20need%20some%20help%20regarding%20ubiAttendance%20app";
+
+    var url;
+    if(country=="93")
+      url = "https://wa.me/916264345459?text="+message;
+    else{
+      url = "https://wa.me/971555524131?text="+message;
+    }
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch Maps';
+    }
+  }
   getmainhomewidget(){
     //  print('99999999999999' + _orgName.toString());
     return new Scaffold(
@@ -77,6 +102,10 @@ class _Reports extends State<Reports> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             new Text('Reports', style: new TextStyle(fontSize: 20.0)),
+            admin_sts == '1' || admin_sts == '2'? new IconButton(
+              icon: new Image.asset('assets/whatsapp.png', height: 25.0, width: 25.0),
+              onPressed: () => openWhatsApp(),
+            ):Container(),
             /*  Image.asset(
                     'assets/logo.png', height: 40.0, width: 40.0),*/
           ],

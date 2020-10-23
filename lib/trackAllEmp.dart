@@ -14,6 +14,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'globals.dart';
 import 'location_tracking/map_pin_pill.dart';
 import 'location_tracking/pin_pill_info.dart';
@@ -124,6 +125,7 @@ class _TrackAllEmpState extends State<TrackAllEmp>  with SingleTickerProviderSta
   BitmapDescriptor sourceIcon;
   BitmapDescriptor destinationIcon;
 String empId;
+String admin_sts="";
 
   var _scaffoldKey;
 
@@ -139,8 +141,35 @@ String empId;
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _orgName = prefs.getString('org_name') ?? '';
+      admin_sts = prefs.getString('sstatus') ?? '';
+
 
     });
+  }
+
+  openWhatsApp() async{
+    //prefix0.facebookChannel.invokeMethod("logContactEvent");
+    // print("Language is "+window.locale.countryCode);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var name=prefs.getString("fname")??"";
+    var org_name= prefs.getString('org_name') ?? '';
+    var country = prefs.getString("org_country")??"";
+    //  String country=window.locale.countryCode;
+    var message;
+
+    message="Hello%20I%20am%20"+name+"%20from%20"+org_name+"%0AI%20need%20some%20help%20regarding%20ubiAttendance%20app";
+
+    var url;
+    if(country=="93")
+      url = "https://wa.me/916264345459?text="+message;
+    else{
+      url = "https://wa.me/971555524131?text="+message;
+    }
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch Maps';
+    }
   }
   TabController _controller1;
   initPlatformState() async {
@@ -415,6 +444,10 @@ var moving=currentLoc.is_moving=="false"?"Still":"Moving";
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             new Text(_orgName, style: new TextStyle(fontSize: 20.0)),
+            admin_sts == '1' || admin_sts == '2'? new IconButton(
+              icon: new Image.asset('assets/whatsapp.png', height: 25.0, width: 25.0),
+              onPressed: () => openWhatsApp(),
+            ):Container(),
 
             /*  Image.asset(
                     'assets/logo.png', height: 40.0, width: 40.0),*/
